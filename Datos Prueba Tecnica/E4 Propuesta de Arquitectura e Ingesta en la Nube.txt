@@ -1,0 +1,16 @@
+[Sensores / Telemetría IoT] 
+         │ (MQTT / HTTP)
+         ▼
+[AWS IoT Core / Azure Event Hubs] ──► [AWS Kinesis / Event Streams]
+                                              │
+                                              ▼
+                                   [AWS Lambda / Cloud Functions] (Validación C1 en tiempo real)
+                                              │
+                    ┌─────────────────────────┴─────────────────────────┐
+                    ▼                                                   ▼
+       [Data Lake S3 / ADLS (Raw)]                          [AWS DynamoDB / Redis]
+       (Datos crudos inmutables - Parquet)                  (Alertas SAT y métricas en vivo)
+                    │
+                    ▼
+[AWS Glue / Databricks] ──► [Feature Store & Models] ──► [Dashboard QuickSight / Grafana]
+(Batch diario: STL, SARIMA, ML)

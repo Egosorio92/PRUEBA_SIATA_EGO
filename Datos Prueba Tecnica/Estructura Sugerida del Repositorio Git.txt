@@ -1,0 +1,24 @@
+prueba-tecnica-siata/
+│
+├── data/
+│   ├── raw/                 # DATOS CRUDOS (Inmutables, nunca se modifican)
+│   └── processed/           # Salidas versionables (CSV/Parquet con banderas de calidad)
+│
+├── src/                     # CÓDIGO MODULAR (E2)
+│   ├── __init__.py
+│   ├── eda.py               # Funciones de perfilamiento y completitud (Tarea A)[cite: 1, 5]
+│   ├── quality.py           # Reglas deterministas y banderas de calidad (Tarea C)[cite: 3, 5]
+│   ├── modeling.py          # Modelado SARIMA / ML y rolling origin (Tarea B)[cite: 2, 5]
+│   └── correlations.py      # Análisis de desestacionalización y lags (Tarea D)[cite: 4, 5]
+│
+├── tests/                   # PRUEBAS AUTOMÁTICAS (E2)
+│   ├── __init__.py
+│   └── test_quality.py      # Tests unitarios con pytest
+│
+├── notebooks/
+│   └── eda_y_modelado.ipynb # Notebook interactivo de ejecución
+│
+├── .gitignore               # Ignora data/raw, .venv, __pycache__
+├── requirements.txt         # Gestión de dependencias (E1)
+├── main.py                  # Script principal para ejecutar el pipeline completo
+└── README.md                # Instrucciones de instalación y ejecución (E1)
