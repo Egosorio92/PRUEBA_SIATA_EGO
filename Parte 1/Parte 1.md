@@ -139,7 +139,7 @@ GROUP BY codigo;
 
 
 
-Pregunta 1.5. Para cada grupo de estándares, indique en una frase qué práctica concreta aplicaría
+## Pregunta 1.5. Para cada grupo de estándares, indique en una frase qué práctica concreta aplicaría
 SIATA.
 Estándar Tema Aplicación en SIATA
 DAMA-DMBOK 2 Gobierno y dimensiones
@@ -159,9 +159,9 @@ metadatos de estaciones
 Principios FAIR Acceso y reutilización de
 datos
 
-# Parte 1 – Respuestas
 
-## Pregunta 1.5 – Aplicación de estándares en SIATA
+
+## Pregunta 1.5 – RESPUESTA Aplicación de estándares en SIATA
 
 | Estándar | Tema | Aplicación en SIATA |
 |-----------|------|--------------------|
@@ -203,9 +203,7 @@ Una cadena de control de calidad puede tener cuatro etapas principales:
 
 
 
-Pregunta 1.7 (arquitectura en la nube e híbrida). SIATA recibe datos por minuto desde
-cientos de estaciones y sus alertas son críticas para la ciudad. Diseñe una arquitectura de datos
-para ingesta, validación, almacenamiento y publicación, sobre la nube de su preferencia (AWS,
+## Pregunta 1.7 (arquitectura en la nube e híbrida). SIATA recibe datos por minuto desde cientos de estaciones y sus alertas son críticas para la ciudad. Diseñe una arquitectura de datos para ingesta, validación, almacenamiento y publicación, sobre la nube de su preferencia (AWS,
 Google Cloud o Azure) o sobre un modelo híbrido (infraestructura propia on-premise más nube).
 Entregue un diagrama y una justificación que cubra:
 (a) Conceptos base: modelos de servicio (IaaS, PaaS, SaaS) y de despliegue (pública, privada,
@@ -218,3 +216,162 @@ tabla), cómo sincroniza ambos entornos y cómo garantiza la continuidad operati
 el enlace o el proveedor.
 (e) Repositorio de calidad en la nube: cómo dispondría el catálogo de datos, el diccionario de
 variables y banderas, las reglas de validación versionadas, el linaje, los indicadores de calidad
+
+## Pregunta 1.7 – Arquitectura en la nube e híbrida para SIATA
+
+### (a) Conceptos base
+SIATA necesita alta disponibilidad y control local sobre estaciones críticas.  
+Elijo un **modelo híbrido** con servicios **IaaS y PaaS** en nube pública (Azure o AWS) y componentes **on‑premise** para adquisición y respaldo.  
+Esto permite escalar procesamiento sin perder autonomía operativa.
+
+---
+
+### (b) Capas de almacenamiento
+- **Crudo:** datos originales en formato CSV o JSON, almacenados localmente y replicados en la nube.  
+- **Validado:** datos limpios y verificados, guardados en formato **Parquet** para eficiencia.  
+- **Producto:** salidas analíticas y modelos, accesibles vía API o dashboard.  
+Cada capa usa particionamiento por fecha y estación para optimizar consultas.
+
+---
+
+### (c) Orquestación y reprocesamiento
+Uso de **Airflow o Prefect** para flujos idempotentes: si una tarea falla, se reejecuta sin duplicar datos.  
+El cómputo se distribuye entre nodos locales y contenedores en la nube (Kubernetes).
+
+---
+
+### (d) Modelo híbrido – Componentes y justificación
+
+| Componente | On‑premise | Nube | Justificación |
+|-------------|-------------|------|---------------|
+| Adquisición y buffer local | ✅ | | Requiere conexión directa con sensores y baja latencia. |
+| Datos crudos históricos | ✅ | ✅ | Copia local para respaldo; nube para análisis masivo. |
+| Validación y control de calidad | | ✅ | Escalabilidad y automatización con servicios PaaS. |
+| Repositorio de calidad (catálogo, banderas, reglas) | | ✅ | Centralizado y accesible para todo el equipo. |
+| Publicación para usuarios (API, datos abiertos) | | ✅ | Alta disponibilidad y acceso público. |
+| Modelos y alertas de operación crítica | ✅ | ✅ | Procesamiento local para alertas inmediatas; nube para predicciones globales. |
+
+Sincronización mediante colas de mensajes (Kafka o MQTT) y copias automáticas; continuidad garantizada con almacenamiento redundante y políticas RPO/RTO.
+
+---
+
+### (e) Repositorio de calidad en la nube
+Incluye:
+- Catálogo de datos y diccionario de variables.  
+- Reglas de validación versionadas y trazabilidad (linaje).  
+- Indicadores de calidad y banderas visuales.  
+Todo gestionado con **Data Catalog + Data Quality Service** y control de acceso por rol.
+
+---
+
+### (f–i) Aspectos complementarios
+- **Seguridad:** cifrado, autenticación y principio de mínimo privilegio.  
+- **Observabilidad:** monitoreo de estaciones y alertas automáticas.  
+- **Costos:** uso de almacenamiento escalable y políticas de retención.  
+- **Infraestructura como código:** despliegue continuo con Terraform y GitHub Actions.
+
+
+## Pregunta 1.8 (repositorios). Describa el flujo de trabajo con Git que implementaría para un equipo de cinco personas que mantiene código de validación de datos. Incluya estrategia de ramas, convención de commits, revisión de código, pruebas automáticas (CI), gestión de versiones del algoritmo de calidad, manejo de datos grandes y de secretos, y qué debe contener un buen README.
+
+## Pregunta 1.8 – Flujo de trabajo con Git para equipo de validación de datos
+
+### Estrategia general
+El equipo usa **GitHub** con un flujo basado en **Git Flow**:  
+- Rama principal `main` (versión estable).  
+- Rama `develop` (integración continua).  
+- Ramas de trabajo `feature/`, `fix/` y `release/` para tareas específicas.  
+Cada desarrollador trabaja en su rama y crea *pull requests* hacia `develop`.
+
+---
+
+### Convención de commits
+Mensajes breves y estructurados:
+
+Ejemplo:  
+- `feat: agregar validación de rango de temperatura`  
+- `fix: corregir cálculo de completitud`  
+- `docs: actualizar README`
+
+---
+
+### Revisión de código y CI
+- Todo *pull request* requiere revisión por otro miembro.  
+- Se ejecutan **pruebas automáticas (CI)** con GitHub Actions o Jenkins: validación de código, tests unitarios y verificación de estilo.  
+- Si las pruebas fallan, el merge se bloquea.
+
+---
+
+### Gestión de versiones y datos
+- Se usa **versionado semántico** (`v1.2.0`) para el algoritmo de calidad.  
+- Los datos grandes se almacenan fuera del repositorio (por ejemplo, en S3 o Azure Blob) y se referencian mediante rutas o metadatos.  
+- Los **secretos** (tokens, contraseñas) se manejan con `.env` y GitHub Secrets, nunca se suben al repositorio.
+
+---
+
+### Buen README
+Debe incluir:
+1. Descripción del proyecto y propósito.  
+2. Estructura de carpetas y dependencias.  
+3. Instrucciones de instalación y ejecución.  
+4. Ejemplo de uso y flujo de validación.  
+5. Créditos y licencia.
+
+
+## Pregunta 1.9. Ingrese al repositorio o portal de datos de SIATA y revise la forma en que se descubren, describen, descargan y documentan los datos. Entregue un informe breve (máximo dos páginas) que responda:
+(a) ¿Qué cambiaría? Elementos existentes que deben modificarse.
+(b) ¿Qué falta? Capacidades, metadatos, documentación o controles ausentes.
+6
+Prueba técnica | Profesional en Ciencia de Datos SIATA • Calidad de Datos
+(c) ¿Qué sobra? Redundancias, información confusa o procesos que no agregan valor.
+(d) ¿Cómo lo mejoraría? Plan priorizado en una matriz de impacto frente a esfuerzo, con
+horizonte de 30, 90 y 180 días.
+Cada hallazgo debe incluir evidencia (captura, enlace o descripción reproducible) y el estándar o
+principio que respalda la recomendación.
+
+
+## Pregunta 1.9 – Auditoría del repositorio de datos de SIATA
+
+### (a) ¿Qué cambiaría?
+- Mejorar la **navegación y búsqueda** de datasets: incluir filtros por variable, estación y rango temporal.  
+- Unificar formatos de descarga (CSV, JSON, API) para evitar duplicidad y confusión.  
+- Estandarizar nombres de campos y unidades según ISO 19115 y WIGOS.
+
+---
+
+### (b) ¿Qué falta?
+- **Metadatos completos**: descripción de variables, unidades, frecuencia de muestreo y método de validación.  
+- **Indicadores de calidad** visibles (completitud, exactitud, consistencia).  
+- **Documentación técnica** sobre el proceso de validación y control de calidad.  
+- API con autenticación y ejemplos de consulta para desarrolladores.
+
+---
+
+### (c) ¿Qué sobra?
+- Redundancia en archivos históricos y versiones sin trazabilidad.  
+- Información dispersa entre secciones del portal sin jerarquía clara.  
+- Descargas masivas sin control de actualización o aviso de cambios.
+
+---
+
+### (d) ¿Cómo lo mejoraría?
+**Plan priorizado:**
+
+| Horizonte | Acción | Impacto | Esfuerzo |
+|------------|---------|----------|-----------|
+| 30 días | Estandarizar metadatos y nombres de variables | Alto | Bajo |
+| 90 días | Implementar API documentada y control de versiones | Alto | Medio |
+| 180 días | Integrar dashboard de calidad y trazabilidad | Muy alto | Alto |
+
+Cada mejora se respalda en principios **FAIR** (Findable, Accessible, Interoperable, Reusable) y estándares **ISO 19115** para metadatos.
+
+---
+
+### Evaluación desde distintos usuarios
+- **Ciudadano:** necesita datos claros y visuales, con contexto y alertas comprensibles.  
+- **Investigador:** requiere trazabilidad, metadatos detallados y control de versiones.  
+- **Desarrollador:** busca APIs estables, documentación técnica y formatos consistentes.
+
+---
+
+### Conclusión
+El repositorio de SIATA tiene una base sólida, pero puede fortalecerse con mayor estandarización, transparencia y herramientas que faciliten el acceso y la reutilización de datos por distintos tipos de usuarios.
