@@ -1,7 +1,6 @@
 # Parte 1: Conceptual, estándares y arquitectura
 
-## Pregunta 1.1. Explique con sus propias palabras qué significa que un dato hidrometeorológico
-tenga calidad. Su respuesta debe:
+## Pregunta 1.1. Explique con sus propias palabras qué significa que un dato hidrometeorológico tenga calidad. Su respuesta debe:
 (a) Definir calidad como aptitud para el uso y vincularla al menos con tres dimensiones tomadas
 de un marco formal (por ejemplo DAMA-DMBOK, ISO/IEC 25012 o ISO 8000).
 (b) Distinguir entre calidad del dato, calidad del instrumento (exactitud, calibración, trazabilidad)
