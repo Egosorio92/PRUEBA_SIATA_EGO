@@ -45,6 +45,21 @@ del algoritmo de validación, diccionario de banderas, historial de mantenimient
 licencia de uso (referencia a los estándares de metadatos de WIGOS y a ISO 19115).
 
 
+RESPUESTA:
+| Aspecto | Dato crudo | Dato validado con metadatos | Dato para consumo del usuario |
+| --- | --- | --- | --- |
+| Definición | Valor medido directamente por el sensor | Valor revisado y documentado con metadatos (por ejemplo, calibración, ubicación, resolución) | Valor listo para análisis o publicación |
+| Unidades y resolución | Puede tener errores o inconsistencias | Verificadas y normalizadas | Homogéneas y estandarizadas |
+| Banderas de calidad | No aplicadas | Incluidas según diccionario de banderas | Interpretadas para el usuario |
+| Metadatos mínimos | Escasos o ausentes | Completos (según WIGOS, ISO 19115) | Visibles y comprensibles |
+| Tratamiento de faltantes | No realizado | Documentado | Imputado o justificado |
+| Usuario típico | Técnico o operador | Analista | Público o decisor |
+| Riesgo de mal uso | Alto | Moderado | Bajo |
+
+La calidad de los datos hidrometeorológicos se construye progresivamente desde el dato crudo hasta el dato validado y documentado con metadatos.  
+Un dato de calidad no solo debe ser físicamente plausible, sino también **trazable, verificable y contextualizado** dentro de un proceso técnico que garantice su confiabilidad y utilidad para la toma de decisiones.
+
+
 
 
 
