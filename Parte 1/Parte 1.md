@@ -8,7 +8,7 @@ de un marco formal (por ejemplo DAMA-DMBOK, ISO/IEC 25012 o ISO 8000).
 y calidad del proceso.
 (c) Explicar por qué un dato físicamente plausible no es necesariamente un dato correcto
 
-
+RESPUESTA:
 ---> La calidad de un dato meteorológico indica que tan apto es ese dato para usarse, que tan confiable es y útil para la investigación que se esta realizando.
 a) Con rspecta al marco DAMA-DMBOK la calidad del dato se evalua con respecto a exactitud (Accuracy), Completitud (Completeness), Consistencia (Consistency) y algunas dimensiones
 complementarias como validez, actualidad y trazabilidad. 
@@ -78,6 +78,51 @@ Limitaciones y posibles sesgos del indicador
 Criterios de la pregunta. Los indicadores deben ser medibles, automatizables, accionables y comparables
 entre variables y estaciones. Se penalizan indicadores redundantes entre sí (por ejemplo, dos formas
 de medir completitud). Los tres deben cubrir dimensiones distintas
+
+RESPUESTA: Estos tres indicadores —completitud, consistencia temporal y exactitud— permiten evaluar de forma práctica si los datos de SIATA son confiables y útiles para análisis y toma de decisiones.
+
+## Pregunta 1.3 – Indicadores de calidad para datos SIATA
+
+### Indicador 1: Completitud
+- **Dimensión:** Completitud.  
+- **Objetivo:** Saber qué porcentaje de datos esperados realmente se registró.  
+- **Fórmula:** (Registros observados / Registros esperados) × 100.  
+- **Unidad y periodicidad:** %, cálculo diario o mensual.  
+- **Fuente:** Estaciones SIATA, por variable.  
+- **Semáforo:** Verde ≥95%, Amarillo 80–94%, Rojo <80%.  
+- **Responsable:** Operación SIATA; revisar conectividad.  
+- **Limitación:** No distingue si los datos presentes son correctos.
+
+---
+
+### Indicador 2: Consistencia temporal
+- **Dimensión:** Consistencia.  
+- **Objetivo:** Verificar que los datos estén en orden y sin duplicados.  
+- **Fórmula:** (Registros coherentes / Registros totales) × 100.  
+- **Unidad y periodicidad:** %, cálculo semanal.  
+- **Fuente:** Series temporales de cada estación.  
+- **Semáforo:** Verde ≥98%, Amarillo 90–97%, Rojo <90%.  
+- **Responsable:** Validación SIATA; depurar duplicados.  
+- **Limitación:** No mide exactitud física, solo coherencia temporal.
+
+---
+
+### Indicador 3: Exactitud frente a referencia
+- **Dimensión:** Exactitud.  
+- **Objetivo:** Comparar datos SIATA con una estación patrón.  
+- **Fórmula:** Promedio del error absoluto entre SIATA y referencia.  
+- **Unidad y periodicidad:** Magnitud de la variable (°C, mm), mensual.  
+- **Fuente:** Estación SIATA vs. estación patrón.  
+- **Semáforo:** Verde ≤5% error, Amarillo 6–10%, Rojo >10%.  
+- **Responsable:** Calibración SIATA; revisar y recalibrar sensores.  
+- **Limitación:** Depende de la calidad de la referencia.
+
+---
+
+
+
+
+
 
 
 
