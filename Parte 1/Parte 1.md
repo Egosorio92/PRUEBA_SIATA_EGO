@@ -1,6 +1,6 @@
-Parte 1: Conceptual, estándares y arquitectura
+# Parte 1: Conceptual, estándares y arquitectura
 
-Pregunta 1.1. Explique con sus propias palabras qué significa que un dato hidrometeorológico
+## Pregunta 1.1. Explique con sus propias palabras qué significa que un dato hidrometeorológico
 tenga calidad. Su respuesta debe:
 (a) Definir calidad como aptitud para el uso y vincularla al menos con tres dimensiones tomadas
 de un marco formal (por ejemplo DAMA-DMBOK, ISO/IEC 25012 o ISO 8000).
@@ -8,7 +8,7 @@ de un marco formal (por ejemplo DAMA-DMBOK, ISO/IEC 25012 o ISO 8000).
 y calidad del proceso.
 (c) Explicar por qué un dato físicamente plausible no es necesariamente un dato correcto
 
-RESPUESTA:
+### RESPUESTA:
 ---> La calidad de un dato meteorológico indica que tan apto es ese dato para usarse, que tan confiable es y útil para la investigación que se esta realizando.
 a) Con rspecta al marco DAMA-DMBOK la calidad del dato se evalua con respecto a exactitud (Accuracy), Completitud (Completeness), Consistencia (Consistency) y algunas dimensiones
 complementarias como validez, actualidad y trazabilidad. 
@@ -22,7 +22,7 @@ no está garantizada. Tomando el mismo ejemplo El sensor mide 25°C pero en real
 
 
 
-Pregunta 1.2. Complete la siguiente tabla y justifique en un párrafo la diferencia entre cada nivel.
+## Pregunta 1.2. Complete la siguiente tabla y justifique en un párrafo la diferencia entre cada nivel.
 Incluya qué se espera que cambie del dato al pasar de un nivel al siguiente.
 
 Aspecto Dato crudo Dato validado con
@@ -45,7 +45,7 @@ del algoritmo de validación, diccionario de banderas, historial de mantenimient
 licencia de uso (referencia a los estándares de metadatos de WIGOS y a ISO 19115).
 
 
-RESPUESTA:
+### RESPUESTA:
 | Aspecto | Dato crudo | Dato validado con metadatos | Dato para consumo del usuario |
 | --- | --- | --- | --- |
 | Definición | Valor medido directamente por el sensor | Valor revisado y documentado con metadatos (por ejemplo, calibración, ubicación, resolución) | Valor listo para análisis o publicación |
@@ -64,7 +64,7 @@ Un dato de calidad no solo debe ser físicamente plausible, sino también **traz
 
 
 
-Pregunta 1.3. Proponga tres (3) indicadores de calidad aplicables a los datos que SIATA publica.
+## Pregunta 1.3. Proponga tres (3) indicadores de calidad aplicables a los datos que SIATA publica.
 Para cada uno, complete la ficha técnica:
 Campo Descripción
 Nombre y dimensión de calidad
@@ -121,16 +121,21 @@ RESPUESTA: Estos tres indicadores —completitud, consistencia temporal y exacti
 
 
 
+## Pregunta 1.4. Para uno de los tres indicadores, escriba el pseudocódigo o la consulta (SQL o Python) que lo calcula sobre una tabla con columnas codigo, fecha_hora, valor y calidad, e indique cómo trataría las estaciones con intervalos de muestreo distintos.
 
+El cálculo se adapta dinámicamente al intervalo de muestreo de cada estación, garantizando una medida justa de completitud sin asumir una frecuencia fija.
 
-
-
-
-
-Pregunta 1.4. Para uno de los tres indicadores, escriba el pseudocódigo o la consulta (SQL o
-Python) que lo calcula sobre una tabla con columnas codigo, fecha_hora, valor y calidad, e indique
-cómo trataría las estaciones con intervalos de muestreo distintos.
-4
+SELECT codigo,
+       COUNT(*) * 100.0 /
+       (DATEDIFF(MINUTE, MIN(fecha_hora), MAX(fecha_hora)) / AVG(intervalo_minutos)) AS completitud
+FROM (
+    SELECT codigo,
+           fecha_hora,
+           LAG(fecha_hora) OVER (PARTITION BY codigo ORDER BY fecha_hora) AS prev_fecha,
+           DATEDIFF(MINUTE, LAG(fecha_hora) OVER (PARTITION BY codigo ORDER BY fecha_hora), fecha_hora) AS intervalo_minutos
+    FROM datos
+) t
+GROUP BY codigo;
 
 
 
@@ -153,10 +158,48 @@ Gestión de calidad y
 metadatos de estaciones
 Principios FAIR Acceso y reutilización de
 datos
-Pregunta 1.6. Describa una cadena de control de calidad de datos meteorológicos en al menos
-cuatro etapas (por ejemplo: formato y completitud, rango, coherencia temporal y persistencia,
-coherencia interna entre variables, coherencia espacial). Para cada etapa indique una prueba
-concreta, su umbral y qué bandera asignaría.
+
+# Parte 1 – Respuestas
+
+## Pregunta 1.5 – Aplicación de estándares en SIATA
+
+| Estándar | Tema | Aplicación en SIATA |
+|-----------|------|--------------------|
+| **DAMA‑DMBOK 2** | Gobierno y dimensiones de calidad | Implementar políticas de gestión de datos y roles claros para asegurar calidad y trazabilidad. |
+| **ISO 8000 / ISO/IEC 25012 / 25024** | Modelo y medición de calidad del dato | Definir métricas de exactitud, completitud y consistencia para evaluar los datos de sensores. |
+| **ISO 19115 / 19157** | Metadatos y calidad geoespacial | Documentar ubicación, resolución y calibración de cada estación en metadatos estandarizados. |
+| **OMM No. 8 / No. 100** | Calidad de instrumentos y datos climatológicos | Aplicar protocolos de calibración y mantenimiento periódico de sensores meteorológicos. |
+| **OMM No. 1131 / Metadatos WIGOS** | Gestión de calidad y metadatos de estaciones | Registrar metadatos técnicos y operativos de cada estación para garantizar trazabilidad. |
+| **Principios FAIR** | Acceso y reutilización de datos | Publicar datos abiertos y bien documentados para facilitar su uso por investigadores y ciudadanía. |
+
+
+
+
+## Pregunta 1.6. Describa una cadena de control de calidad de datos meteorológicos en al menos cuatro etapas (por ejemplo: formato y completitud, rango, coherencia temporal y persistencia, coherencia interna entre variables, coherencia espacial). Para cada etapa indique una prueba concreta, su umbral y qué bandera asignaría.
+
+Cada etapa aplica una prueba concreta y asigna una bandera de calidad (verde, amarilla o roja) para facilitar la validación automática y la trazabilidad de los datos meteorológicos.
+
+Una cadena de control de calidad puede tener cuatro etapas principales:
+
+### 1. Formato y completitud
+- **Prueba:** verificar que cada registro tenga `codigo`, `fecha_hora`, `valor` y `calidad` sin vacíos.  
+- **Umbral:** ≥ 95 % de registros completos.  
+- **Bandera:** Verde si cumple, Amarillo si hay faltantes moderados, Rojo si faltan más del 5 %.  
+
+### 2. Rango físico
+- **Prueba:** comprobar que los valores estén dentro de límites plausibles (ej. temperatura entre –10 °C y 45 °C).  
+- **Umbral:** fuera del rango → alerta.  
+- **Bandera:** Verde si está dentro del rango, Rojo si lo excede.  
+
+### 3. Coherencia temporal y persistencia
+- **Prueba:** detectar saltos bruscos o valores repetidos por largo tiempo.  
+- **Umbral:** variación > 3 σ o más de 5 valores idénticos consecutivos.  
+- **Bandera:** Amarillo si hay anomalías leves, Rojo si son persistentes.  
+
+### 4. Coherencia interna entre variables
+- **Prueba:** comparar variables relacionadas (ej. lluvia > 0 → humedad > 60 %).  
+- **Umbral:** inconsistencias > 10 % de los registros.  
+- **Bandera:** Verde si coherente, Amarillo si hay discrepancias menores, Rojo si son frecuentes.  
 
 
 
