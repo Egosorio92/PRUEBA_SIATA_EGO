@@ -201,8 +201,7 @@ Una cadena de control de calidad puede tener cuatro etapas principales:
 
 
 
-## Pregunta 1.7 (arquitectura en la nube e híbrida). SIATA recibe datos por minuto desde cientos de estaciones y sus alertas son críticas para la ciudad. Diseñe una arquitectura de datos para ingesta, validación, almacenamiento y publicación, sobre la nube de su preferencia (AWS,
-Google Cloud o Azure) o sobre un modelo híbrido (infraestructura propia on-premise más nube).
+## Pregunta 1.7 (arquitectura en la nube e híbrida). SIATA recibe datos por minuto desde cientos de estaciones y sus alertas son críticas para la ciudad. Diseñe una arquitectura de datos para ingesta, validación, almacenamiento y publicación, sobre la nube de su preferencia (AWS, Google Cloud o Azure) o sobre un modelo híbrido (infraestructura propia on-premise más nube).
 Entregue un diagrama y una justificación que cubra:
 (a) Conceptos base: modelos de servicio (IaaS, PaaS, SaaS) y de despliegue (pública, privada,
 híbrida), y cuál elegiría para SIATA y por qué.
