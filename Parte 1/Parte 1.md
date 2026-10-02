@@ -21,8 +21,7 @@ no está garantizada. Tomando el mismo ejemplo El sensor mide 25°C pero en real
 
 
 
-## Pregunta 1.2. Complete la siguiente tabla y justifique en un párrafo la diferencia entre cada nivel.
-Incluya qué se espera que cambie del dato al pasar de un nivel al siguiente.
+## Pregunta 1.2. Complete la siguiente tabla y justifique en un párrafo la diferencia entre cada nivel. Incluya qué se espera que cambie del dato al pasar de un nivel al siguiente.
 
 Aspecto Dato crudo Dato validado con
 metadatos
